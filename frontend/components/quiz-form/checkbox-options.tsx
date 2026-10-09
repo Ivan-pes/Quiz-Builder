@@ -32,9 +32,9 @@ export function CheckboxOptions({ questionIndex }: { questionIndex: number }) {
 
   return (
     <fieldset aria-describedby={listError ? listErrorId : undefined}>
-      <legend className="mb-2 text-sm font-medium text-slate-700">
+      <legend className="mb-1.5 text-sm font-medium text-neutral-700">
         Options{' '}
-        <span className="font-normal text-slate-500">
+        <span className="font-normal text-neutral-500">
           (check every correct answer)
         </span>
       </legend>
@@ -54,7 +54,7 @@ export function CheckboxOptions({ questionIndex }: { questionIndex: number }) {
                     onChange: revalidateList,
                   })}
                   aria-label={`Option ${optionIndex + 1} is correct`}
-                  className="size-5 shrink-0 accent-indigo-600"
+                  className="size-5 shrink-0 accent-emerald-600"
                 />
                 <input
                   {...register(`${base}.text`)}
@@ -76,7 +76,7 @@ export function CheckboxOptions({ questionIndex }: { questionIndex: number }) {
                       ? `At least ${MIN_OPTIONS} options are required`
                       : 'Remove option'
                   }
-                  className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+                  className="grid size-10 shrink-0 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
                 >
                   <X className="size-4" aria-hidden />
                 </button>
@@ -91,7 +91,7 @@ export function CheckboxOptions({ questionIndex }: { questionIndex: number }) {
 
       <Button
         variant="ghost"
-        className="mt-2 px-2"
+        className="mt-2 px-3"
         onClick={() => append({ text: '', isCorrect: false })}
         disabled={fields.length >= MAX_OPTIONS}
       >

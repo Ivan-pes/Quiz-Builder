@@ -2,25 +2,31 @@
 
 import Link from 'next/link';
 import { useOptimistic, useState, useTransition } from 'react';
-import { ChevronRight, ClipboardList, Trash2 } from 'lucide-react';
+import { Layers, Trash2 } from 'lucide-react';
+import { formatDate, pluralizeQuestions, quizGradient } from '@/lib/quiz-theme';
 import { deleteQuizAction } from '@/services/quiz-actions';
 import type { QuizSummary } from '@/types/quiz';
+import { ArrowCircle } from './ui/arrow-circle';
 import { ButtonLink } from './ui/button';
+import { ConfirmDialog } from './ui/confirm-dialog';
 
 export function QuizList({ quizzes }: { quizzes: QuizSummary[] }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<QuizSummary | null>(null);
   const [visibleQuizzes, removeQuiz] = useOptimistic(
     quizzes,
     (current, deletedId: number) =>
       current.filter((quiz) => quiz.id !== deletedId),
   );
 
-  function handleDelete(quiz: QuizSummary) {
-    if (!window.confirm(`Delete "${quiz.title}"? This cannot be undone.`)) {
+  function confirmDelete() {
+    const quiz = pendingDelete;
+    if (!quiz) {
       return;
     }
 
+    setPendingDelete(null);
     setError(null);
     startTransition(async () => {
       removeQuiz(quiz.id);
@@ -36,7 +42,7 @@ export function QuizList({ quizzes }: { quizzes: QuizSummary[] }) {
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {error}
         </p>
@@ -45,54 +51,96 @@ export function QuizList({ quizzes }: { quizzes: QuizSummary[] }) {
       {visibleQuizzes.length === 0 ? (
         <EmptyState />
       ) : (
-        <ul className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          {visibleQuizzes.map((quiz) => (
-            <li key={quiz.id} className="flex items-center">
-              <Link
-                href={`/quizzes/${quiz.id}`}
-                className="group flex min-w-0 flex-1 items-center gap-3 px-4 py-4 hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none sm:px-5"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-slate-900 group-hover:text-indigo-600">
-                    {quiz.title}
-                  </p>
-                  <p className="text-sm text-slate-500">
-                    {quiz.questionCount}{' '}
-                    {quiz.questionCount === 1 ? 'question' : 'questions'}
-                  </p>
-                </div>
-                <ChevronRight
-                  className="size-5 shrink-0 text-slate-400"
-                  aria-hidden
-                />
-              </Link>
-              <button
-                type="button"
-                onClick={() => handleDelete(quiz)}
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {visibleQuizzes.map((quiz, index) => (
+            <li
+              key={quiz.id}
+              className="animate-rise"
+              style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+            >
+              <QuizCard
+                quiz={quiz}
                 disabled={isPending}
-                aria-label={`Delete quiz "${quiz.title}"`}
-                title="Delete quiz"
-                className="mr-2 rounded-lg p-2.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-red-600 disabled:opacity-50 sm:mr-3"
-              >
-                <Trash2 className="size-5" aria-hidden />
-              </button>
+                onDelete={() => setPendingDelete(quiz)}
+              />
             </li>
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete quiz?"
+        description={`"${pendingDelete?.title ?? ''}" and all its questions will be removed permanently.`}
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </div>
+  );
+}
+
+/** Document-style card with a shimmering gradient. */
+function QuizCard({
+  quiz,
+  disabled,
+  onDelete,
+}: {
+  quiz: QuizSummary;
+  disabled: boolean;
+  onDelete: () => void;
+}) {
+  return (
+    <article
+      className={`shimmer group flex min-h-52 flex-col rounded-3xl p-5 shadow-[0_10px_30px_-12px_rgb(30_60_90/0.35)] transition hover:-translate-y-1 sm:p-6 ${quizGradient(quiz.id)}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <span className="rounded-full bg-white/70 px-3 py-1 text-sm font-medium backdrop-blur">
+          {pluralizeQuestions(quiz.questionCount)}
+        </span>
+        <button
+          type="button"
+          onClick={onDelete}
+          disabled={disabled}
+          aria-label={`Delete quiz "${quiz.title}"`}
+          title="Delete quiz"
+          className="relative z-10 grid size-10 place-items-center rounded-full bg-white/70 text-neutral-700 backdrop-blur transition hover:bg-red-600 hover:text-white focus-visible:outline-2 focus-visible:outline-red-600 disabled:opacity-50"
+        >
+          <Trash2 className="size-5" aria-hidden />
+        </button>
+      </div>
+
+      <h2 className="mt-auto pt-8 text-2xl leading-tight font-semibold tracking-tight break-words">
+        {/* The link covers the whole card; the delete button sits above it */}
+        <Link
+          href={`/quizzes/${quiz.id}`}
+          className="after:absolute after:inset-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-4 focus-visible:after:outline-neutral-950"
+        >
+          {quiz.title}
+        </Link>
+      </h2>
+
+      <div className="mt-3 flex items-center justify-between">
+        <span className="text-sm text-neutral-700">
+          Created {formatDate(quiz.createdAt)}
+        </span>
+        <ArrowCircle />
+      </div>
+    </article>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center rounded-xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
-      <ClipboardList className="size-10 text-slate-400" aria-hidden />
-      <h2 className="mt-3 font-semibold">No quizzes yet</h2>
-      <p className="mt-1 text-sm text-slate-500">
+    <div className="card flex flex-col items-center px-6 py-14 text-center">
+      <span className="grid size-16 place-items-center rounded-3xl bg-neutral-950 text-white">
+        <Layers className="size-8" aria-hidden />
+      </span>
+      <h2 className="mt-4 text-xl font-semibold">No quizzes yet</h2>
+      <p className="mt-1 text-neutral-500">
         Create your first quiz to see it here.
       </p>
-      <ButtonLink href="/create" className="mt-5">
+      <ButtonLink href="/create" className="mt-6">
         Create quiz
       </ButtonLink>
     </div>

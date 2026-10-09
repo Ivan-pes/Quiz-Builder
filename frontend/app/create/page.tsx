@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Create quiz' };
 
 export default function CreateQuizPage() {
   return (
-    <>
+    <div className="mx-auto max-w-3xl">
       <PageHeader
         title="Create quiz"
         description="Add a title and as many questions as you need"
@@ -17,7 +17,7 @@ export default function CreateQuizPage() {
       <Suspense fallback={<QuizFormSkeleton />}>
         <QuizForm />
       </Suspense>
-    </>
+    </div>
   );
 }
 
@@ -28,8 +28,8 @@ function QuizFormSkeleton() {
       aria-label="Loading form"
       className="animate-pulse space-y-6"
     >
-      <div className="h-24 rounded-xl border border-slate-200 bg-white" />
-      <div className="h-56 rounded-xl border border-slate-200 bg-white" />
+      <div className="h-28 rounded-3xl bg-white/60" />
+      <div className="h-72 rounded-3xl bg-white/60" />
     </div>
   );
 }

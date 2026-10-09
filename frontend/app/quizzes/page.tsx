@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { Plus } from 'lucide-react';
 import { QuizList } from '@/components/quiz-list';
+import { ButtonLink } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
 import { getQuizzes } from '@/services/quiz-api';
 
@@ -9,7 +11,16 @@ export const metadata: Metadata = { title: 'Quizzes' };
 export default function QuizzesPage() {
   return (
     <>
-      <PageHeader title="Quizzes" description="All quizzes you have created" />
+      <PageHeader
+        title="Quizzes"
+        description="All quizzes you have created"
+        action={
+          <ButtonLink href="/create" className="self-start sm:self-auto">
+            <Plus className="size-4" aria-hidden />
+            New quiz
+          </ButtonLink>
+        }
+      />
       <Suspense fallback={<QuizListSkeleton />}>
         <Quizzes />
       </Suspense>
@@ -27,13 +38,10 @@ function QuizListSkeleton() {
     <ul
       aria-busy
       aria-label="Loading quizzes"
-      className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white"
+      className="grid animate-pulse gap-4 sm:grid-cols-2"
     >
-      {[0, 1, 2].map((item) => (
-        <li key={item} className="animate-pulse space-y-2 px-5 py-4">
-          <div className="h-4 w-1/2 rounded bg-slate-200" />
-          <div className="h-3 w-20 rounded bg-slate-100" />
-        </li>
+      {[0, 1, 2, 3].map((item) => (
+        <li key={item} className="h-52 rounded-3xl bg-white/60" />
       ))}
     </ul>
   );

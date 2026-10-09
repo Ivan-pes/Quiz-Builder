@@ -4,9 +4,6 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
-  async redirects() {
-    return [{ source: '/', destination: '/quizzes', permanent: false }];
-  },
 };
 
 export default nextConfig;

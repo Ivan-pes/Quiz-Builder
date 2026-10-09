@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { SiteHeader } from '@/components/site-header';
+import { SiteNav } from '@/components/navigation';
 import './globals.css';
 
 const geistSans = Geist({
@@ -19,12 +19,17 @@ export const metadata: Metadata = {
     'Create quizzes with boolean, text and multiple-choice questions',
 };
 
+export const viewport: Viewport = {
+  themeColor: '#a9cbe6',
+  viewportFit: 'cover',
+};
+
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-dvh font-sans">
-        <SiteHeader />
-        <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:py-10">
+        <SiteNav />
+        <main className="mx-auto w-full max-w-5xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12">
           {children}
         </main>
       </body>

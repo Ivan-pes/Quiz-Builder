@@ -1,8 +1,8 @@
 export function inputClassName(invalid = false, className = '') {
-  return `w-full rounded-lg border bg-white px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:outline-none ${
+  return `w-full rounded-2xl border bg-white px-4 py-2.5 text-neutral-950 placeholder:text-neutral-400 focus:ring-4 focus:outline-none ${
     invalid
-      ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
-      : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-200'
+      ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
+      : 'border-neutral-200 focus:border-neutral-950 focus:ring-neutral-950/10'
   } ${className}`;
 }
 

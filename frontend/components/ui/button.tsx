@@ -4,13 +4,12 @@ import type { ComponentProps } from 'react';
 type Variant = 'primary' | 'secondary' | 'ghost';
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-950 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500',
-  secondary:
-    'border border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50',
-  ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+  primary: 'bg-neutral-950 text-white hover:bg-neutral-800',
+  secondary: 'bg-white text-neutral-950 shadow-sm hover:bg-neutral-50',
+  ghost: 'text-neutral-700 hover:bg-white/60 hover:text-neutral-950',
 };
 
 export function buttonClassName(variant: Variant = 'primary', className = '') {

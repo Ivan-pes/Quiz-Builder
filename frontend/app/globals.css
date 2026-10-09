@@ -3,15 +3,111 @@
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --animate-gradient-drift: gradient-drift 18s ease-in-out infinite alternate;
+  --animate-gradient-shift: gradient-shift 8s ease-in-out infinite alternate;
+  --animate-shine: shine 6s ease-in-out infinite;
+  --animate-rise: rise 0.4s ease-out both;
+
+  @keyframes gradient-drift {
+    from {
+      background-position: 0% 0%;
+    }
+    to {
+      background-position: 100% 100%;
+    }
+  }
+
+  @keyframes gradient-shift {
+    from {
+      background-position: 0% 50%;
+    }
+    to {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes shine {
+    0%,
+    55% {
+      transform: translateX(-120%) skewX(-20deg);
+    }
+    100% {
+      transform: translateX(220%) skewX(-20deg);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
 }
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply text-neutral-950 antialiased;
+    /* Calm pastel backdrop (sky → mint → pale yellow) that slowly drifts */
+    background-color: #cfe3f1;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      160deg,
+      #a9cbe6 0%,
+      #c3dcef 30%,
+      #d4ecea 60%,
+      #e9f0d6 85%,
+      #f3f1d8 100%
+    );
+    background-size: 200% 200%;
+    animation: var(--animate-gradient-drift);
   }
 
   button:not(:disabled),
   [role='button']:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Frosted white card used for content blocks */
+  .card {
+    @apply rounded-3xl bg-white/85 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(30_60_90/0.18)] backdrop-blur-sm;
+  }
+
+  /* Vivid, slowly shifting gradient with a light sweep, like a document card */
+  .shimmer {
+    @apply relative isolate overflow-hidden;
+    background-size: 220% 220%;
+    animation: var(--animate-gradient-shift);
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: -1;
+    width: 45%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.45),
+      transparent
+    );
+    animation: var(--animate-shine);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .shimmer,
+  .shimmer::after {
+    animation: none;
   }
 }

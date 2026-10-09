@@ -69,7 +69,7 @@ export function QuizForm() {
         {serverErrors.length > 0 && (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 ring-1 ring-red-200"
           >
             <p className="font-medium">Could not create the quiz</p>
             <ul className="mt-1 list-inside list-disc">
@@ -80,10 +80,10 @@ export function QuizForm() {
           </div>
         )}
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <div className="shimmer rounded-3xl bg-[linear-gradient(120deg,#b8f0d8,#bfe6f2,#d9d6f5,#b8f0d8)] p-5 shadow-[0_10px_30px_-12px_rgb(30_60_90/0.35)] sm:p-6">
           <label
             htmlFor="quiz-title"
-            className="mb-1 block text-sm font-medium text-slate-700"
+            className="mb-1.5 block text-sm font-medium text-neutral-800"
           >
             Quiz title
           </label>
@@ -93,7 +93,10 @@ export function QuizForm() {
             placeholder="e.g. JavaScript Basics"
             aria-invalid={!!errors.title}
             aria-describedby={errors.title ? 'quiz-title-error' : undefined}
-            className={inputClassName(!!errors.title, 'text-lg')}
+            className={inputClassName(
+              !!errors.title,
+              'bg-white/80 text-xl font-medium',
+            )}
           />
           <FieldError id="quiz-title-error" message={errors.title?.message} />
         </div>
@@ -114,13 +117,13 @@ export function QuizForm() {
           type="button"
           onClick={() => append(createEmptyQuestion())}
           disabled={fields.length >= MAX_QUESTIONS}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 px-4 py-4 text-sm font-medium text-slate-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-neutral-950/20 bg-white/40 px-4 py-5 font-medium text-neutral-700 backdrop-blur transition hover:border-neutral-950/50 hover:bg-white/70 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="size-4" aria-hidden />
           Add question
         </button>
 
-        <div className="flex flex-col-reverse gap-2 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <ButtonLink href="/quizzes" variant="secondary">
             Cancel
           </ButtonLink>
